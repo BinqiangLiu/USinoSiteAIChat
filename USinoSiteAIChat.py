@@ -49,16 +49,15 @@ llm = HuggingFaceHub(repo_id=repo_id,
                                    "top_k":50,
                                    "top_p":0.95, "eos_token_id":49155})
 
-prompt_template = """
-You are a very helpful AI assistant.
-Please ONLY use {context} to answer the user's input question.
-If you don't know the answer, just say that you don't know.
-DON'T try to make up an answer and do NOT go beyond the given context without the user's explicitly asking you to do so!
+prompt_template = """You are a very helpful AI assistant. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.
+
+{context}
+
 Question: {question}
-AI Repsonse:
-"""
+Helpufl AI Repsonse/Answer:"""
 
 PROMPT = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
+#PROMPT = PromptTemplate(template=prompt_template, input_variables=["context", "input_query"])
 
 #chain = load_qa_chain(llm=llm, chain_type="stuff")
 chain = load_qa_chain(llm=llm, chain_type="stuff", prompt=PROMPT)
