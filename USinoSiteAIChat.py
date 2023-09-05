@@ -102,14 +102,13 @@ text_splitter = CharacterTextSplitter(
 )
 
 with st.sidebar:
-#    url = st.text_input("Insert The website URL")
-#    print("You want to chat with: "+url)
     st.subheader("You are chatting with USinoIP official website.")
-    st.write("Disclaimer: This app is for information purpose only. NO liability could be claimed against whoever associated with this app in any manner. User should consult a qualified legal professional for legal advice.")
-    st.subheader("Enjoy Chatting!")
+    print("You want to chat with: "+url)
+    st.write("Note & Disclaimer: This app is provided on open source framework and is for information purpose only. NO guarantee is offered regarding information accuracy. NO liability could be claimed against whoever associated with this app in any manner. User should consult a qualified legal professional for legal advice.")
     st.sidebar.markdown("Contact: [aichat101@foxmail.com](mailto:aichat101@foxmail.com)")
     st.sidebar.markdown('WeChat: <span class="blue-underline">pat2win</span>, or scan the code below.', unsafe_allow_html=True)
     st.image(wechat_image)
+    st.subheader("Enjoy Chatting!")
     st.sidebar.markdown('<span class="blue-underline">Life Enhancing with AI.</span>', unsafe_allow_html=True)
     with st.spinner("Preparing website materials for you..."):
         try:
