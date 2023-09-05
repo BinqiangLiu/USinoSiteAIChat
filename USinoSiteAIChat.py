@@ -49,7 +49,11 @@ llm = HuggingFaceHub(repo_id=repo_id,
                                    "top_k":50,
                                    "top_p":0.95, "eos_token_id":49155})
 
-prompt_template = """You are a very helpful AI assistant. Please ONLY use {input_documents} as context to answer the user's input question. If you don't know the answer, just say that you don't know. DON'T try to make up an answer and do NOT go beyong the given context without the user explicitly asking you to do so.
+prompt_template = """
+You are a very helpful AI assistant.
+Please ONLY use {input_documents} as context to answer the user's input question.
+If you don't know the answer, just say that you don't know.
+DON'T try to make up an answer and do NOT go beyond the given context without the user's explicitly asking you to do so!
 #{input_documents}将作为context使用
 Question: {question}
 AI Repsonse:
