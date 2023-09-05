@@ -59,7 +59,7 @@ AI Repsonse:
 """
 # {input_documents}将作为contexts使用
 
-PROMPT = PromptTemplate(template=prompt_template, input_variables=["input_documents", "input_query"])
+PROMPT = PromptTemplate(template=prompt_template, input_variables=["input_documents", "question"])
 
 #chain = load_qa_chain(llm=llm, chain_type="stuff")
 chain = load_qa_chain(llm=llm, chain_type="stuff", prompt=PROMPT)
