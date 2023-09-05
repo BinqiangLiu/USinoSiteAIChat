@@ -54,11 +54,11 @@ You are a very helpful AI assistant.
 Please ONLY use {context} to answer the user's input question.
 If you don't know the answer, just say that you don't know.
 DON'T try to make up an answer and do NOT go beyond the given context without the user's explicitly asking you to do so!
-Question: {input_query}
+Question: {question}
 AI Repsonse:
 """
 
-PROMPT = PromptTemplate(template=prompt_template, input_variables=["context", "input_query"])
+PROMPT = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
 
 #chain = load_qa_chain(llm=llm, chain_type="stuff")
 chain = load_qa_chain(llm=llm, chain_type="stuff", prompt=PROMPT)
@@ -183,7 +183,7 @@ with st.spinner("AI Thinking...Please wait a while to Cheers!"):
     loader = TextLoader(i_file_path, encoding="utf-8")
     loaded_documents = loader.load()
 #    chain({"context": docs, "question": query}, return_only_outputs=True)
-    temp_ai_response=chain.run({"context": loaded_documents, "input_query": user_question}, return_only_outputs=True)
+    temp_ai_response=chain.run({"context": loaded_documents, "question": user_question}, return_only_outputs=True)
 #    temp_ai_response=chain.run({"context": loaded_documents, "question": user_question}, return_only_outputs=True)    
 #  document_variable_name context was not found in llm_chain input_variables: ['input_documents', 'question'] (type=value_error)    
     #temp_ai_response=chain.run(input_documents=loaded_documents, question=user_question)
