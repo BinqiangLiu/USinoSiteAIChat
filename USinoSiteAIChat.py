@@ -127,7 +127,7 @@ with st.sidebar:
             st.stop()  
           
 #应对不规范的问题输入
-if user_question.strip().isspace() or user_question.strip() == "" or user_question.isspace():
+if user_question.strip().isspace() or user_question.isspace():
     st.write("Query Empty. Please enter a valid query first.")
     st.stop()
 elif user_question == "exit":
