@@ -49,12 +49,10 @@ llm = HuggingFaceHub(repo_id=repo_id,
                                    "top_k":50,
                                    "top_p":0.95, "eos_token_id":49155})
 
-prompt_template = """You are a very helpful AI assistant. Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.
-
-{context}
-
+prompt_template = """You are a very helpful AI assistant. Please ONLY use {context} to answer the user's input question. If you don't know the answer, just say that you don't know. DON'T try to make up an answer and do NOT go beyond the given context without the user's explicitly asking you to do so!
 Question: {question}
-Helpufl AI Repsonse/Answer:"""
+Helpufl AI AI Repsonse:
+"""
 
 PROMPT = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
 #PROMPT = PromptTemplate(template=prompt_template, input_variables=["context", "input_query"])
@@ -168,14 +166,14 @@ with st.spinner("AI Thinking...Please wait a while to Cheers!"):
         page_content = texts[hits[0][i]['corpus_id']]
         page_contents.append(page_content)
     print(page_contents)
-    print()
+    print("***************************")
     temp_page_contents=str(page_contents)
-    print()
+    print("***************************")
     final_page_contents = temp_page_contents.replace('\\n', '') 
     print(final_page_contents) 
-    print()
+    print("***************************")
     print("AI Thinking...Please wait a while to Cheers!")
-    print()
+    print("***************************")
     random_string = generate_random_string(20)
     i_file_path = random_string + ".txt"
     with open(i_file_path, "w", encoding="utf-8") as file:
@@ -189,9 +187,10 @@ with st.spinner("AI Thinking...Please wait a while to Cheers!"):
 #否则会报错：
 #    temp_ai_response=chain.run({"context": loaded_documents, "question": user_question}, return_only_outputs=True)    
 #  document_variable_name context was not found in llm_chain input_variables: ['input_documents', 'question'] (type=value_error)    
-    #temp_ai_response=chain.run(input_documents=loaded_documents, question=user_question)    
+    #temp_ai_response=chain.run(input_documents=loaded_documents, question=user_question)
+    print("temp_ai_response before get rid of output_text\n\n:"+str(temp_ai_response))
     temp_ai_response = temp_ai_response['output_text']
-    print("temp_ai_response"+temp_ai_response)
+    print("temp_ai_response\n"+temp_ai_response)
     final_ai_response=temp_ai_response.partition('<|end|>')[0]
     i_final_ai_response = final_ai_response.replace('\n', '')
     print("AI Response:")
