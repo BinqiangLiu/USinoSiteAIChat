@@ -1,17 +1,14 @@
-#https://www.youtube.com/watch?v=ZlwtYmKlL_0
 import sys
 import streamlit as st
 from langchain.chains import RetrievalQA
 from langchain.document_loaders import WebBaseLoader
-from langchain.prompts.chat import (ChatPromptTemplate,
-                                    HumanMessagePromptTemplate,
-                                    SystemMessagePromptTemplate)
 from langchain.chains.question_answering import load_qa_chain
 from langchain import PromptTemplate, LLMChain
 from langchain import HuggingFaceHub
 from PyPDF2 import PdfReader
 from langchain.text_splitter import CharacterTextSplitter
 from langchain.document_loaders import TextLoader
+from sentence_transformers.util import semantic_search
 import requests
 from pathlib import Path
 from time import sleep
@@ -22,8 +19,8 @@ import string
 from dotenv import load_dotenv
 load_dotenv()
 
-st.set_page_config(page_title="🦜🔗 Chat With Website", layout="wide")
-st.subheader("🦜🔗 Website AI Chat Assistant")
+st.set_page_config(page_title="USinoIP Website AI Chat Assistant", layout="wide")
+st.subheader("Welcome to USinoIP Website AI Chat Assistant.")
 
 css_file = "main.css"
 with open(css_file) as f:
@@ -58,8 +55,7 @@ def generate_random_string(length):
     letters = string.ascii_lowercase
     return ''.join(random.choice(letters) for i in range(length))  
     
-text_list = []
-url=""
+url="https://www.usinoip.com"
 texts=""
 raw_text=""
 user_question = ""
@@ -67,6 +63,7 @@ initial_embeddings=""
 db_embeddings = ""
 i_file_path=""
 file_path = ""
+random_string=""
 wechat_image= "WeChatCode.jpg"
 
 st.sidebar.markdown(
@@ -100,13 +97,14 @@ user_question = st.text_input("Enter your query here and AI-Chat with your websi
 text_splitter = CharacterTextSplitter(        
     separator = "\n",
     chunk_size = 1000,
-    chunk_overlap  = 200, #striding over the text
+    chunk_overlap  = 200,
     length_function = len,
 )
 
 with st.sidebar:
-    url = st.text_input("Insert The website URL")
-    print("You want to chat with: "+url)
+#    url = st.text_input("Insert The website URL")
+#    print("You want to chat with: "+url)
+    st.subheader("You are chatting with USinoIP official website.")
     st.write("Disclaimer: This app is for information purpose only. NO liability could be claimed against whoever associated with this app in any manner. User should consult a qualified legal professional for legal advice.")
     st.subheader("Enjoy Chatting!")
     st.sidebar.markdown("Contact: [aichat101@foxmail.com](mailto:aichat101@foxmail.com)")
@@ -121,13 +119,14 @@ with st.sidebar:
             page_content = str(page_content)
             temp_texts = text_splitter.split_text(page_content)
             texts = temp_texts
-            initial_embeddings=get_embeddings(texts)
+            initial_embeddings=get_embeddings(texts) #texts必须是字符串格式（url对应的网站内容将以字符串的形式全部存储在其中）
             db_embeddings = torch.FloatTensor(initial_embeddings) 
-        except Exception as e:
-            st.write("Please enter a valide URL.")
+        except Exception as e: #理论上不需要了/因为不会报错
+            st.write("Unknow error.")
             print("Please enter a valide URL.")
             st.stop()  
           
+#应对不规范的问题输入
 if user_question.strip().isspace() or user_question.strip() == "" or user_question.isspace():
     st.write("Query Empty. Please enter a valid query first.")
     st.stop()
@@ -137,38 +136,31 @@ elif user_question == "":
     print("Query Empty. Please enter a valid query first.")
     st.stop()
 elif user_question != "":     
-    #st.write("Your question: "+user_question)
+    #st.write("Your query: "+user_question)
     print("Your query: "+user_question)
-    print()
-
-q_embedding=get_embeddings(user_question)
-final_q_embedding = torch.FloatTensor(q_embedding)
-
-from sentence_transformers.util import semantic_search
-hits = semantic_search(final_q_embedding, db_embeddings, top_k=5)
-
-for i in range(len(hits[0])):
-    print(texts[hits[0][i]['corpus_id']])
-    print()
-
-page_contents = []
-for i in range(len(hits[0])):
-    page_content = texts[hits[0][i]['corpus_id']]
-    page_contents.append(page_content)
-
-print(page_contents)
-print()
-temp_page_contents=str(page_contents)
-print()
-final_page_contents = temp_page_contents.replace('\\n', '') 
-print(final_page_contents)
-print()
-print("AI Thinking...Please wait a while to Cheers!")
-print()
-
-random_string = generate_random_string(20)
+    print() #只有当用户输入符合规范时才会继续往下执行代码
 
 with st.spinner("AI Thinking...Please wait a while to Cheers!"):
+    q_embedding=get_embeddings(user_question)
+    final_q_embedding = torch.FloatTensor(q_embedding)  
+    hits = semantic_search(final_q_embedding, db_embeddings, top_k=5)
+    for i in range(len(hits[0])):
+        print(texts[hits[0][i]['corpus_id']])
+        print()
+    page_contents = []
+    for i in range(len(hits[0])):
+        page_content = texts[hits[0][i]['corpus_id']]
+        page_contents.append(page_content)
+    print(page_contents)
+    print()
+    temp_page_contents=str(page_contents)
+    print()
+    final_page_contents = temp_page_contents.replace('\\n', '') 
+    print(final_page_contents) 
+    print()
+    print("AI Thinking...Please wait a while to Cheers!")
+    print()
+    random_string = generate_random_string(20)
     i_file_path = random_string + ".txt"
     with open(i_file_path, "w", encoding="utf-8") as file:
         file.write(final_page_contents)
@@ -182,5 +174,3 @@ with st.spinner("AI Thinking...Please wait a while to Cheers!"):
     print("Have more questions? Go ahead and continue asking your AI assistant : )")
     st.write("AI Response:")
     st.write(i_final_ai_response)
-#    st.write("---")
-#    st.write("Have more questions? Go ahead and continue asking your AI assistant : )")
