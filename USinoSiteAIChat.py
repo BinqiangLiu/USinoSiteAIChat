@@ -180,7 +180,9 @@ with st.spinner("AI Thinking...Please wait a while to Cheers!"):
     loader = TextLoader(i_file_path, encoding="utf-8")
     loaded_documents = loader.load()
 #    chain({"context": docs, "question": query}, return_only_outputs=True)
-    temp_ai_response=chain.run({"context": loaded_documents, "question": user_question}, return_only_outputs=True)
+    temp_ai_response=chain.run({"input_documents": loaded_documents, "question": user_question}, return_only_outputs=True)
+#    temp_ai_response=chain.run({"context": loaded_documents, "question": user_question}, return_only_outputs=True)    
+#  document_variable_name context was not found in llm_chain input_variables: ['input_documents', 'question'] (type=value_error)    
     #temp_ai_response=chain.run(input_documents=loaded_documents, question=user_question)
     final_ai_response=temp_ai_response.partition('<|end|>')[0]
     i_final_ai_response = final_ai_response.replace('\n', '')
