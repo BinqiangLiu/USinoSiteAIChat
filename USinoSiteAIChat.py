@@ -51,15 +51,15 @@ llm = HuggingFaceHub(repo_id=repo_id,
 
 prompt_template = """
 You are a very helpful AI assistant.
-Please ONLY use {input_documents} to answer the user's input question.
+Please ONLY use {context} to answer the user's input question.
 If you don't know the answer, just say that you don't know.
 DON'T try to make up an answer and do NOT go beyond the given context without the user's explicitly asking you to do so!
-Question: {question}
+Question: {input_query}
 AI Repsonse:
 """
 # {input_documents}将作为contexts使用
 
-PROMPT = PromptTemplate(template=prompt_template, input_variables=["input_documents", "question"])
+PROMPT = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
 
 #chain = load_qa_chain(llm=llm, chain_type="stuff")
 chain = load_qa_chain(llm=llm, chain_type="stuff", prompt=PROMPT)
