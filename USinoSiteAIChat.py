@@ -55,15 +55,7 @@ Helpufl AI AI Repsonse:
 """
 
 PROMPT = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
-#PROMPT = PromptTemplate(template=prompt_template, input_variables=["context", "input_query"])
-
-#chain = load_qa_chain(llm=llm, chain_type="stuff")
 chain = load_qa_chain(llm=llm, chain_type="stuff", prompt=PROMPT)
-#chain = load_qa_chain(OpenAI(temperature=0), chain_type="stuff", prompt=PROMPT)
-#chain({"context": docs, "question": query}, return_only_outputs=True)
-
-#https://python.langchain.com/docs/use_cases/question_answering/how_to/question_answering
-#docsearch = Chroma.from_texts(texts, embeddings, metadatas=[{"source": str(i)} for i in range(len(texts))]).as_retriever()
 
 def generate_random_string(length):
     letters = string.ascii_lowercase
@@ -133,14 +125,13 @@ with st.sidebar:
             page_content = str(page_content)
             temp_texts = text_splitter.split_text(page_content)
             texts = temp_texts
-            initial_embeddings=get_embeddings(texts) #texts必须是字符串格式（url对应的网站内容将以字符串的形式全部存储在其中）
+            initial_embeddings=get_embeddings(texts)
             db_embeddings = torch.FloatTensor(initial_embeddings) 
-        except Exception as e: #理论上不需要了/因为不会报错
+        except Exception as e:
             st.write("Unknow error.")
             print("Please enter a valide URL.")
             st.stop()  
           
-#应对不规范的问题输入
 if user_question.strip().isspace() or user_question.isspace():
     st.write("Query Empty. Please enter a valid query first.")
     st.stop()
@@ -152,49 +143,28 @@ elif user_question == "":
 elif user_question != "":     
     #st.write("Your query: "+user_question)
     print("Your query: "+user_question)
-    print() #只有当用户输入符合规范时才会继续往下执行代码
+    print() 
 
 with st.spinner("AI Thinking...Please wait a while to Cheers!"):
     q_embedding=get_embeddings(user_question)
     final_q_embedding = torch.FloatTensor(q_embedding)  
     hits = semantic_search(final_q_embedding, db_embeddings, top_k=5)
-    for i in range(len(hits[0])):
-        print(texts[hits[0][i]['corpus_id']])
-        print()
     page_contents = []
     for i in range(len(hits[0])):
         page_content = texts[hits[0][i]['corpus_id']]
         page_contents.append(page_content)
-    print(page_contents)
-    print("***************************")
     temp_page_contents=str(page_contents)
-    print("***************************")
-    final_page_contents = temp_page_contents.replace('\\n', '') 
-    print(final_page_contents) 
-    print("***************************")
-    print("AI Thinking...Please wait a while to Cheers!")
-    print("***************************")
+    final_page_contents = temp_page_contents.replace('\\n', '')     
     random_string = generate_random_string(20)
     i_file_path = random_string + ".txt"
     with open(i_file_path, "w", encoding="utf-8") as file:
         file.write(final_page_contents)
     loader = TextLoader(i_file_path, encoding="utf-8")
     loaded_documents = loader.load()
-#    chain({"context": docs, "question": query}, return_only_outputs=True)
-#    temp_ai_response=chain.run({"context": loaded_documents, "question": user_question}, return_only_outputs=True)
     temp_ai_response=chain({"input_documents": loaded_documents, "question": user_question}, return_only_outputs=False)
-#如果使用chain函数中使用prompt=PROMPT，则需要使用temp_ai_response=chain()的形式，而不可以使用temp_ai_response=chain.run()的形式
-#否则会报错：
-#    temp_ai_response=chain.run({"context": loaded_documents, "question": user_question}, return_only_outputs=True)    
-#  document_variable_name context was not found in llm_chain input_variables: ['input_documents', 'question'] (type=value_error)    
-    #temp_ai_response=chain.run(input_documents=loaded_documents, question=user_question)
-    print("temp_ai_response before get rid of output_text\n\n:"+str(temp_ai_response))
     temp_ai_response = temp_ai_response['output_text']
     print("temp_ai_response\n"+temp_ai_response)
     final_ai_response=temp_ai_response.partition('<|end|>')[0]
     i_final_ai_response = final_ai_response.replace('\n', '')
-    print("AI Response:")
-    print(i_final_ai_response)
-    print("Have more questions? Go ahead and continue asking your AI assistant : )")
     st.write("AI Response:")
     st.write(i_final_ai_response)
