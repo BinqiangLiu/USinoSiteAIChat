@@ -1,0 +1,16 @@
+langchain
+openai
+streamlit
+python-dotenv
+bs4
+chromadb
+tiktoken
+PyPDF2
+huggingface_hub
+langchain
+pandas
+PyPDF2
+Requests
+sentence_transformers
+streamlit_chat
+torch
