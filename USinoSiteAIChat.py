@@ -99,7 +99,6 @@ st.markdown(
 )
 
 user_question = st.text_input("Enter your query here and AI-Chat with your website:")
-print("Your query:"+user_question)
 
 text_splitter = CharacterTextSplitter(        
     separator = "\n",
@@ -110,7 +109,6 @@ text_splitter = CharacterTextSplitter(
 
 with st.sidebar:
     st.subheader("You are chatting with USinoIP official website.")
-    print("You want to chat with: "+url)
     st.write("Note & Disclaimer: This app is provided on open source framework and is for information purpose only. NO guarantee is offered regarding information accuracy. NO liability could be claimed against whoever associated with this app in any manner. User should consult a qualified legal professional for legal advice.")
     st.sidebar.markdown("Contact: [aichat101@foxmail.com](mailto:aichat101@foxmail.com)")
     st.sidebar.markdown('WeChat: <span class="blue-underline">pat2win</span>, or scan the code below.', unsafe_allow_html=True)
@@ -143,8 +141,7 @@ elif user_question == "":
 elif user_question != "":     
     #st.write("Your query: "+user_question)
     print("Your query: "+user_question)
-    print() 
-
+    
 with st.spinner("AI Thinking...Please wait a while to Cheers!"):
     q_embedding=get_embeddings(user_question)
     final_q_embedding = torch.FloatTensor(q_embedding)  
@@ -162,8 +159,7 @@ with st.spinner("AI Thinking...Please wait a while to Cheers!"):
     loader = TextLoader(i_file_path, encoding="utf-8")
     loaded_documents = loader.load()
     temp_ai_response=chain({"input_documents": loaded_documents, "question": user_question}, return_only_outputs=False)
-    temp_ai_response = temp_ai_response['output_text']
-    print("temp_ai_response\n"+temp_ai_response)
+    temp_ai_response = temp_ai_response['output_text']    
     final_ai_response=temp_ai_response.partition('<|end|>')[0]
     i_final_ai_response = final_ai_response.replace('\n', '')
     st.write("AI Response:")
