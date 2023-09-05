@@ -183,13 +183,13 @@ with st.spinner("AI Thinking...Please wait a while to Cheers!"):
     loaded_documents = loader.load()
 #    chain({"context": docs, "question": query}, return_only_outputs=True)
 #    temp_ai_response=chain.run({"context": loaded_documents, "question": user_question}, return_only_outputs=True)
-    temp_ai_response=chain({"input_documents": loaded_documents, "question": user_question}, return_only_outputs=True)
+    temp_ai_response=chain({"input_documents": loaded_documents, "question": user_question}, return_only_outputs=False)
 #如果使用chain函数中使用prompt=PROMPT，则需要使用temp_ai_response=chain()的形式，而不可以使用temp_ai_response=chain.run()的形式
 #否则会报错：
 #    temp_ai_response=chain.run({"context": loaded_documents, "question": user_question}, return_only_outputs=True)    
 #  document_variable_name context was not found in llm_chain input_variables: ['input_documents', 'question'] (type=value_error)    
-    #temp_ai_response=chain.run(input_documents=loaded_documents, question=user_question)
-    temp_ai_response=str(temp_ai_response)
+    #temp_ai_response=chain.run(input_documents=loaded_documents, question=user_question)    
+    temp_ai_response = temp_ai_response['output_text']
     final_ai_response=temp_ai_response.partition('<|end|>')[0]
     i_final_ai_response = final_ai_response.replace('\n', '')
     print("AI Response:")
