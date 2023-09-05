@@ -50,7 +50,7 @@ llm = HuggingFaceHub(repo_id=repo_id,
                                    "top_p":0.95, "eos_token_id":49155})
 
 prompt_template = """Use the following pieces of context to answer the question at the end. If you don't know the answer, just say that you don't know, don't try to make up an answer.
-{context}
+{input_documents}
 Question: {question}
 AI Repsonse:
 """
