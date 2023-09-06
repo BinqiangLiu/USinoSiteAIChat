@@ -53,7 +53,7 @@ prompt_template = """
 #You are a very helpful AI assistant. Please ONLY use {context} to answer the user's input question. If you don't know the answer, just say that you don't know. DON'T try to make up an answer and do NOT go beyond the given context without the user's explicitly asking you to do so!
 You are a very helpful AI assistant. Please response to the user's input question with as many details as possible.
 Question: {question}
-Helpufl AI AI Repsonse:
+Helpful AI Repsonse:
 """
 PROMPT = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
 chain = load_qa_chain(llm=llm, chain_type="stuff", prompt=PROMPT)
